@@ -1,1 +1,1 @@
-# imposter-game
+# Imposter Game
