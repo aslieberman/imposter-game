@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposter Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7; }
+        #game-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
+        #question { margin: 20px 0; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Imposter Game</h1>
+        <div id="setup">
+            <label for="numPlayers">How many players?</label>
+            <input type="number" id="numPlayers" min="3" required>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+        <div id="game" style="display: none;">
+            <p id="question"></p>
+            <button onclick="nextPlayer()">Next</button>
+        </div>
+        <div id="reveal" style="display: none;">
+            <button onclick="revealMain()">Reveal Main Question</button>
+        </div>
+        <div id="main-reveal" style="display: none;">
+            <h2>MAIN QUESTION</h2>
+            <p id="mainQuestionText"></p>
+            <button onclick="revealImposter()">Reveal Imposter</button>
+        </div>
+        <div id="imposter-reveal" style="display: none;">
+            <h2>IMPOSTER REVEAL</h2>
+            <p id="imposterText"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [...]; // You can paste your questions array here as a JavaScript array.
+
+        let numPlayers = 0;
+        let currentPlayer = 0;
+        let imposterIndex = 0;
+        let selectedQuestion = null;
+
+        function startGame() {
+            numPlayers = parseInt(document.getElementById("numPlayers").value);
+            if (numPlayers < 3) {
+                alert("You need at least 3 players.");
+                return;
+            }
+
+            imposterIndex = Math.floor(Math.random() * numPlayers);
+            selectedQuestion = questions[Math.floor(Math.random() * questions.length)];
+
+            document.getElementById("setup").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = currentPlayer === imposterIndex ? selectedQuestion.imposter : selectedQuestion.main;
+            document.getElementById("question").innerText = `Player ${currentPlayer + 1}, your question: \n\n${question}`;
+        }
+
+        function nextPlayer() {
+            currentPlayer++;
+            if (currentPlayer < numPlayers) {
+                showQuestion();
+            } else {
+                document.getElementById("game").style.display = "none";
+                document.getElementById("reveal").style.display = "block";
+            }
+        }
+
+        function revealMain() {
+            document.getElementById("reveal").style.display = "none";
+            document.getElementById("main-reveal").style.display = "block";
+            document.getElementById("mainQuestionText").innerText = selectedQuestion.main;
+        }
+
+        function revealImposter() {
+            document.getElementById("main-reveal").style.display = "none";
+            document.getElementById("imposter-reveal").style.display = "block";
+            document.getElementById("imposterText").innerText = `The imposter was Player ${imposterIndex + 1}!\nTheir question was: ${selectedQuestion.imposter}`;
+        }
+    </script>
+</body>
+</html>
